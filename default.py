@@ -66,7 +66,7 @@ MODE_NZBSTREAM_MY = "nzbstream&nzbstream=mycart"
 
 NZBSTREAM_URL = ("http://" + __settings__.getSetting("nzbstream_site") + "/rss?dl=1&i=" + __settings__.getSetting("nzbstream_id") + 
             "&r=" + __settings__.getSetting("nzbstream_key"))
-NZBSTREAM_URL_SEARCH = ("http://nzbstream/api?dl=1&apikey=" + __settings__.getSetting("nzbstream_key"))
+NZBSTREAM_URL_SEARCH = ("http://" + __settings__.getSetting("nzbstream_site") + "/api?dl=1&apikey=" + __settings__.getSetting("nzbstream_key"))
 
         
 def site_caps(url):
@@ -115,6 +115,8 @@ def nzbstream(params):
                     key = "&catid=" + str(catid)
                     addPosts(name, key, MODE_NZBSTREAM)
             addPosts("My Cart", '', MODE_NZBSTREAM_MY)
+            addPosts('Incomplete', '', MODE_INCOMPLETE)
+    xbmcplugin.setContent(int(sys.argv[1]), 'movies')
     return
 
 def list_feed_nzbstream(feedUrl):
@@ -289,12 +291,9 @@ if (__name__ == "__main__" ):
         __settings__.setSetting("firstrun", '1')
     if (not sys.argv[2]):
         nzbstream(None)
-        addPosts('Incomplete', '', MODE_INCOMPLETE)
     else:
         params = getParameters(sys.argv[2])
         get = params.get
-        if get("mode")== MODE_LIST:
-            listVideo(params)
         if get("mode")== MODE_NZBSTREAM:
             nzbstream(params)
         if get("mode")== MODE_HIDE:
